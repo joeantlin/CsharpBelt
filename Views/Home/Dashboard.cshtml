@@ -1,0 +1,59 @@
+<nav>
+    <h1>Dojo activity Center</h1>
+
+    <div>Welcome @ViewBag.ThisUser.FirstName</div>
+    <div><a href="/logout">Logout</a></div>
+</nav>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Activity</th>
+            <th scope="col">Date and Time</th>
+            <th scope="col">Duration</th>
+            <th scope="col">Event Coordinator</th>
+            <th scope="col"># of Participants</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(Event i in ViewBag.AllEvents)
+        {
+            <tr>
+                <td><a href="/info/@i.Id">@i.Title</a></td>
+                <td>@i.Date.ToString("d") at @i.Time</td>
+                <td>@i.Duration @i.DurationType</td>
+                <td>@i.Creator.FirstName</td>
+                <td>@i.Participants.Count</td>
+                <td>@{
+                        bool isTrue = false;
+                        int ParticipantId = 0;
+                        @foreach(var k in @i.Participants)
+                        {
+                            if(k.UserId == @ViewBag.ThisUser.Id)
+                            {
+                                ParticipantId = k.Id;
+                                isTrue = true;
+                            }
+                        }
+                        if (isTrue)
+                        {
+                            <a href='@string.Format("/deleteparticipant/{0}", @i.Id)'>Unjoin</a>
+                        }
+                        else {
+                            if (@i.UserID ==  @ViewBag.ThisUser.Id)
+                            {
+                                <a href="/delete/@i.Id">Cancel Activity</a>
+                            } 
+                            else {
+                                <a href="/newparticipant/@i.Id">Join</a>
+                            }
+                        }
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<button><a href="/create">Create</a></button>

@@ -1,0 +1,44 @@
+<nav>
+    <h1>Dojo activity Center</h1>
+
+    <div><a href="/">Home</a></div>
+    <div><a href="/logout">Logout</a></div>
+</nav>
+
+<h2>@ViewBag.ThisEvent.Title</h2>
+
+<p>Event Coordinator: @ViewBag.ThisEvent.Creator.FirstName</p>
+<p>Description: @ViewBag.ThisEvent.Description</p>
+
+<p>Participants:</p>
+<ul>
+    @foreach(Participant i in @ViewBag.ThisEvent.Participants)
+    {
+        <li>@i.User.FirstName</li>
+    }
+</ul>
+
+@{
+    bool isTrue = false;
+    @foreach(var k in @ViewBag.ThisEvent.Participants)
+    {
+        if(k.UserId == @ViewBag.ThisUser.Id)
+        {
+            isTrue = true;
+        }
+    }
+    if (isTrue)
+    {
+        <button><a href='@string.Format("/deleteparticipant/{0}", @ViewBag.ThisEvent.Id)'>Unjoin</a></button>  
+    }
+    else {
+        if (@ViewBag.ThisEvent.UserID ==  @ViewBag.ThisUser.Id)
+        {
+            <button><a href="/delete/@ViewBag.ThisEvent.Id">Cancel Activity</a></button> 
+        } 
+        else {
+            <button><a href="/newparticipant/@ViewBag.ThisEvent.Id">Join</a></button>
+            
+        }
+    }
+}
